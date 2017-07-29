@@ -46,13 +46,13 @@ def shred(file_name,  passes):
 
 def crypto(arq, password):
     if not os.path.isfile(arq):
-        error('File does not exist')
+        error('File does not exist.')
     else:
         try:
             with open(arq, 'rb') as f:
                 pass
         except IOError as e:
-            error('Error trying to open file: ' + e)
+            error('Error trying to open file: ' + str(e))
 
         with open(arq, 'rb') as in_file, open(arq + '.ks', 'wb') as out_file:
             encrypt(in_file, out_file, password)
@@ -60,13 +60,13 @@ def crypto(arq, password):
 
 def decryptor(arq, password):
     if not os.path.isfile(arq):
-        error('File does not exist')
+        error('File does not exist.')
     else:
         try:
             with open(arq, 'rb') as f:
                 pass
         except IOError as e:
-            error('Error trying to open file: ' + e)
+            error('Error trying to open file: ' + str(e))
 
         if(os.path.splitext(arq)[1] == '.ks'):
             new = os.path.splitext(arq)[0]
@@ -76,7 +76,7 @@ def decryptor(arq, password):
         shred(arq, 1)
 
 
-def multiple_files(direc):
+def multiple_files(direc, mode):
     pass
 
 def derive_key_and_iv(password, salt, key_length, iv_length):
@@ -86,7 +86,6 @@ def derive_key_and_iv(password, salt, key_length, iv_length):
         d += d_i
     return d[:key_length], d[key_length:key_length+iv_length]
 
-# criptografa o arquivo, criando novo arquivo com uma senha AES.
 def encrypt(in_file, out_file, password, key_length=32):
     bs = AES.block_size
     salt = Random.new().read(bs - len('Salted__'))
@@ -119,16 +118,33 @@ def decrypt(in_file, out_file, password, key_length=32):
 
 if __name__ == '__main__':
     if ((not args.file) and (args.directory)): # only dir
-        pass
+        if(args.password):
+            if(args.encrypt and (not args.decrypt)):
+                multiple_files(args.directory, args.password, args.encrypt)
+            elif(args.decrypt and (not args.encrypt)):
+                multiple_files(args.file, args.password, args.decrypt)
+            elif(args.decrypt and args.encrypt):
+                error('Cannot encrypt and decrypt files at the same time.\nUse flag -h for help.')
+            else:
+                error('You need to specify wich operation: encrypt or decrypt\nUse flag -h for help.')
+        else:
+            error('You need to use a password.\nUse flag -h for help.')
 
     elif((args.file) and (not args.directory)): # only file
-        if(args.encrypt):
-            crypto(args.file, args.password)
-        elif(args.decrypt):
-            decryptor(args.file, args.password)
+        if(args.password):
+            if(args.encrypt and (not args.decrypt)):
+                crypto(args.file, args.password)
+            elif(args.decrypt and (not args.encrypt)):
+                decryptor(args.file, args.password)
+            elif(args.decrypt and args.encrypt):
+                error('Cannot encrypt and decrypt file at the same time.\nUse flag -h for help.')
+            else:
+                error('You need to specify wich operation: encrypt or decrypt\nUse flag -h for help.')
+        else:
+            error('You need to use a password.\nUse flag -h for help.')
 
     elif((not args.file) and (not args.directory)): # neither
-        pass
+        error('You need to specify file or files inside a directory.')
 
     else: # both
         pass
