@@ -12,6 +12,9 @@ import string
 import random
 import sys
 
+'''
+     use files to encrypt other file
+'''
 
 # argparse
 parser = argparse.ArgumentParser(description='KeepSecret is a tool to cryptograph your files')
@@ -76,8 +79,22 @@ def decryptor(arq, password):
         shred(arq, 1)
 
 
-def multiple_files(direc, mode):
-    pass
+def multiple_files(direc, password, mode):
+    if(os.path.isdir(direc)):
+        files_inside = []
+        for path, folder, files in os.walk(direc):
+            for arq in files:
+                files_inside.append(os.path.join(path, arq))
+
+        if(mode == 1):
+            for files in files_inside:
+                crypto(files, password)
+        else:
+            for files in files_inside:
+                decryptor(files, password)
+
+    else:
+        error('Directory specified is not a directory at all.')
 
 def derive_key_and_iv(password, salt, key_length, iv_length):
     d = d_i = ''
@@ -120,9 +137,9 @@ if __name__ == '__main__':
     if ((not args.file) and (args.directory)): # only dir
         if(args.password):
             if(args.encrypt and (not args.decrypt)):
-                multiple_files(args.directory, args.password, args.encrypt)
+                multiple_files(args.directory, args.password, 1) # encrypt
             elif(args.decrypt and (not args.encrypt)):
-                multiple_files(args.file, args.password, args.decrypt)
+                multiple_files(args.directory, args.password, 2) # decrypt
             elif(args.decrypt and args.encrypt):
                 error('Cannot encrypt and decrypt files at the same time.\nUse flag -h for help.')
             else:
