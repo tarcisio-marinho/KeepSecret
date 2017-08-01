@@ -32,6 +32,9 @@ def instalation():
 def error(er):
     sys.exit('Error: ' + er)
 
+def error_2(er):
+    print('Error: ' + er)
+
 def generate_data(length):
     chars = string.ascii_lowercase + string.ascii_uppercase + string.digits
     return ''.join(random.SystemRandom().choice(chars) for _ in range(length))
@@ -58,8 +61,11 @@ def crypto(arq, password):
             error('Error trying to open file: ' + str(e))
 
         with open(arq, 'rb') as in_file, open(arq + '.ks', 'wb') as out_file:
-            encrypt(in_file, out_file, password)
-        shred(arq, 1)
+            try:
+                encrypt(in_file, out_file, password)
+            except:
+                error_2('Error Encrypting this file ' + arq)
+        os.remove(arq)
 
 def decryptor(arq, password):
     if not os.path.isfile(arq):
@@ -73,11 +79,14 @@ def decryptor(arq, password):
 
         if(os.path.splitext(arq)[1] == '.ks'):
             new = os.path.splitext(arq)[0]
+        else:
+            return
 
         with open(arq, 'rb') as in_file, open(new, 'wb') as out_file:
-            decrypt(in_file, out_file, password)
-        shred(arq, 1)
-
+            try:
+                decrypt(in_file, out_file, password)
+            except:
+                error_2('Error Decrypting this file ' + arq)
 
 def multiple_files(direc, password, mode):
     if(os.path.isdir(direc)):
