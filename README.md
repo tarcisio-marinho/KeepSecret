@@ -9,6 +9,16 @@ https://sourceforge.net/projects/keepsecret/files/ks/download
 # Installation:
     sudo cp ks /usr/bin/ks
 
+# Compiling yourself:
+    
+    git clone https://github.com/tarcisio-marinho/KeepSecret.git
+    
+    cd KeepSecret
+    
+    sudo pip install -r requeriments.txt
+     
+    pyinstaller -F --clean main.py
+    
 
 # Sintaxe:
     usage: ks [-h] [-e] [-D] [-f] [-d] [-p]
