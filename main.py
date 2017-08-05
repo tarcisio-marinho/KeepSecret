@@ -18,8 +18,8 @@ import sys
 
 # argparse
 parser = argparse.ArgumentParser(description='KeepSecret is a tool to cryptograph your files')
-parser.add_argument('-e', '--encrypt', required = False, action = 'store_true',  help = 'File to be Encrypted/Decrypted')
-parser.add_argument('-D', '--decrypt', required = False, action = 'store_true',  help = 'File to be Encrypted/Decrypted')
+parser.add_argument('-e', '--encrypt', required = False, action = 'store_true',  help = 'File or directory to be Encrypted')
+parser.add_argument('-D', '--decrypt', required = False, action = 'store_true',  help = 'File or directory to be Decrypted')
 parser.add_argument('-f', '--file', type = str, required = False, metavar = '',  help = 'File to be Encrypted/Decrypted')
 parser.add_argument('-d', '--directory', type = str, required = False, metavar = '', help = 'All files inside this Directory will be Encrypted/Decrypted')
 parser.add_argument('-p', '--password', type = str, required = False, metavar = '', help = 'Password to Encrypt/Decrypt file')
